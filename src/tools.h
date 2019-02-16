@@ -27,6 +27,7 @@ class Tools {
    */
   Eigen::MatrixXd CalculateJacobian(const Eigen::VectorXd& x_state);
 
+  double ZeroCheck(const double &value, const double epsilon = 1.0e-4);
 };
 
 #endif  // TOOLS_H_

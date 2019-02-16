@@ -1,129 +1,185 @@
 # Extended Kalman Filter Project Starter Code
 Self-Driving Car Engineer Nanodegree Program
 
-In this project you will utilize a kalman filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower than the tolerance outlined in the project rubric. 
+# **Object Tracking with Sensor Fusion-based Extended Kalman Filter**
 
-This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
+### Objective
+Utilize sensor data from both LIDAR and RADAR measurements for object (e.g. pedestrian, vehicles, or other moving objects) 
+tracking with the Extended Kalman Filter.
 
-This repository includes two files that can be used to set up and install [uWebSocketIO](https://github.com/uWebSockets/uWebSockets) for either Linux or Mac systems. For windows you can use either Docker, VMware, or even [Windows 10 Bash on Ubuntu](https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/) to install uWebSocketIO. Please see the uWebSocketIO Starter Guide page in the classroom within the EKF Project lesson for the required version and installation scripts.
+### **Demo: Object tracking with both LIDAR and RADAR measurements**
 
-Once the install for uWebSocketIO is complete, the main program can be built and run by doing the following from the project top directory.
+![][both_png]
 
-1. mkdir build
-2. cd build
-3. cmake ..
-4. make
-5. ./ExtendedKF
+In this demo, the blue car is the object to be tracked, but the tracked object can be any types, e.g. 
+pedestrian, vehicles, or other moving objects. We continuously got both LIDAR (**red circle**) and RADAR (**blue circle**) 
+measurements of the car's location in the defined coordinate, but there might be noise and errors in the data.
+Program gets two types of data input(s), namely RADAR, LIDAR both containing position and velocity of object that program tracking. LIDAR and RADAR provides good accurate position of the obecjt but velocity of the object provided from RADAR input(s).  Program uses both measurement(S) to udpate the predicted positon, velocity 
 
-Tips for setting up your environment can be found in the classroom lesson for this project.
+Extended Kalman Filter algorithm is used to compute the estimated location (**green triangle**) of the blue car. 
+The estimated trajectory (**green triangle**) is compared with the ground true trajectory of the blue car, and 
+the error is displayed in RMSE format in real time.
 
-Note that the programs that need to be written to accomplish the project are src/FusionEKF.cpp, src/FusionEKF.h, kalman_filter.cpp, kalman_filter.h, tools.cpp, and tools.h
+In autonomous driving case, the self-driving cars obtian both Lidar and radar sensors measurements of objects
+to be tracked, and then apply the Extended Kalman Filter to track the objects based on the two types
+ of sensor data.
 
-The program main.cpp has already been filled out, but feel free to modify it.
-
-Here is the main protocol that main.cpp uses for uWebSocketIO in communicating with the simulator.
-
-
-INPUT: values provided by the simulator to the c++ program
-
-["sensor_measurement"] => the measurement that the simulator observed (either lidar or radar)
-
-
-OUTPUT: values provided by the c++ program to the simulator
-
-["estimate_x"] <= kalman filter estimated position x
-["estimate_y"] <= kalman filter estimated position y
-["rmse_x"]
-["rmse_y"]
-["rmse_vx"]
-["rmse_vy"]
 
 ---
 
-## Other Important Dependencies
+
+## Code & Files
+### 1. Dependencies & environment
 
 * cmake >= 3.5
-  * All OSes: [click here for installation instructions](https://cmake.org/install/)
-* make >= 4.1 (Linux, Mac), 3.81 (Windows)
+ * All OSes: [click here for installation instructions](https://cmake.org/install/)
+* make >= 4.1
   * Linux: make is installed by default on most Linux distros
   * Mac: [install Xcode command line tools to get make](https://developer.apple.com/xcode/features/)
   * Windows: [Click here for installation instructions](http://gnuwin32.sourceforge.net/packages/make.htm)
 * gcc/g++ >= 5.4
   * Linux: gcc / g++ is installed by default on most Linux distros
-  * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
+  * Mac: same deal as make - [install Xcode command line tools]((https://developer.apple.com/xcode/features/)
   * Windows: recommend using [MinGW](http://www.mingw.org/)
+* [Eigen library](src/Eigen)
 
-## Basic Build Instructions
+
+### 2. project files
+
+(Note: the hyperlinks **only** works if you are on the homepage of this GitHub reop,
+and if you are viewing it in "github.io" you can be redirected by clicking the **View the Project on GitHub** on the top)
+
+* [CMakeLists.txt](CMakeLists.txt) is the cmake file.
+
+* [data](data) folder contains test lidar and radar measurements.
+
+* [Docs](Docs) folder contains docments which describe the data.
+
+* [src](src) folder contains the source code.
+
+### 3. How to run the code
 
 1. Clone this repo.
 2. Make a build directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make` 
    * On windows, you may need to run: `cmake .. -G "Unix Makefiles" && make`
-4. Run it: `./ExtendedKF `
+4. Run it by either of the following commands: 
+   * `./ExtendedKF  ../data/obj_pose-laser-radar-synthetic-input.txt ./output.txt`
+   * `./ExtendedKF  ../data/sample-laser-radar-measurement-data-1.txt ./output.txt`
 
-## Editor Settings
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+## System details
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+### 1. Demos
 
-## Code Style
+### **Demo 1: Tracking with both LIDAR and RADAR measurements**
+In this demo, both LIDAR and RADAR measurements are used for object tracking.
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+![][both_png]
 
-## Generating Additional Data
+ 
 
-This is optional!
+### **Demo 2: Tracking with only LIDAR measurements**
 
-If you'd like to generate your own radar and lidar data, see the
-[utilities repo](https://github.com/udacity/CarND-Mercedes-SF-Utilities) for
-Matlab scripts that can generate additional data.
+In this demo, only LIDAR measurements are used for the object tracking. 
+ 
+![][lidar_png]
 
-## Project Instructions and Rubric
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
 
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project resources page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/382ebfd6-1d55-4487-84a5-b6a5a4ba1e47)
-for instructions and the project rubric.
+### **Demo 3：Tracking with only RADAR measurements**
 
-## Hints and Tips!
+In this demo, only RADAR measurements are used for the object tracking.
+are more noisy than the LIDAR measurements.
 
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-* Students have reported rapid expansion of log files when using the term 2 simulator.  This appears to be associated with not being connected to uWebSockets.  If this does occur,  please make sure you are conneted to uWebSockets. The following workaround may also be effective at preventing large log files.
+![][radar_png]
 
-    + create an empty log file
-    + remove write permissions so that the simulator can't write to log
- * Please note that the ```Eigen``` library does not initialize ```VectorXd``` or ```MatrixXd``` objects with zeros upon creation.
 
-## Call for IDE Profiles Pull Requests
+#### From these three Demos, we could see that 
 
-Help your fellow students!
+* RADAR measurements are tend to be more more noisy than the LIDAR measurements.
+* Extended Kalman Filter tracking by utilizing both measurements from both LIDAR and RADAR can reduce the noise/errors 
+from the sensor measurements, and provide the robust estimations of the tracked object locations.   
 
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to ensure
-that students don't feel pressured to use one IDE or another.
+**_Note_**: the advantage of RADAR is that it can estimate the object speed directly by 
+[Doppler effect](https://en.wikipedia.org/wiki/Doppler_effect).
 
-However! We'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
 
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
+### 2. How does LIDAR measurement look like
 
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
+The LIDAR will produce 3D measurement px,py,pz. But for the case of driving on the road, we could simplify the pose of 
+the tracked object as: px,py,and one rotation. In other words, we could only use px and px to indicate the position of 
+the object, and one rotation to indicate the orientation of the object. But in real world where you have very steep road, 
+you have to consider z axis as well. Also in application like airplane and drone, you definitely want to consider pz as well.
 
-Regardless of the IDE used, every submitted project must
-still be compilable with cmake and make.
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+### 3. How does RADAR measurement look like
 
+![][image1]
+
+### 4. Comparison of LIDAR, RADAR and Camera
+
+|            Sensor type           |  LIDAR |    RADAR  |   Camera   |
+|:--------------------------------:|:------:|:---------:|:----------:|
+|            Resolution            | median |  low      |  **high**  |
+|      Direct velocity measure     |   no   |  **yes**  |     no     |
+|            All-weather           |   bad  |  **good** |     bad    |
+|            Sensor size           |  large | **small** |  **small** |
+| sense non-line of  sight object  |   no   |  **yes**  |     no     |
+
+
+**_Note_**:
+
+* LIDAR wavelength in infrared; RADAR wavelength in mm. 
+* LIDAR most affected by dirt and small debris.
+
+
+![][image2]
+
+
+### 5. How does the Extended Kalman Filter Work
+
+
+![][image4]
+
+
+### 4. Extended Kalman Filter V.S. Kalman Filter
+
+
+![][image3]
+
+
+* _x_ is the mean state vector.
+* _F_ is the state transition function.
+* _P_ is the state covariance matrix, indicating the uncertainty of the object's state.
+* _u_ is the process noise, which is a Gaussian with zero mean and covariance as Q.
+* _Q_ is the covariance matrix of the process noise.
+---------------------------------------------------------
+* _y_ is the innovation term, i.e. the difference between the measurement and the prediction. In order to compute the innovation term, we transform the state to measurement space by measurement function, so that we can compare the measurement and prediction directly.
+* _H_ is the measurement function.
+* _z_ is the measurement.
+* _R_ is the covariance matrix of the measurement noise.
+* _I_ is the identity matrix.
+* _K_ is the Kalman filter gain.
+* _Hj_ and _Fj_ are the jacobian matrix.
+
+
+**All Kalman filters have the same three steps:**
+
+1. Initialization
+2. Prediction
+3. Update
+
+A **standard Kalman filter** can only handle linear equations. Both the **Extended Kalman Filter** (EKF) and the **Unscented Kalman Filter** (UKF will be disuccsed in the next project) allow you to use non-linear equations; the difference between EKF and UKF is how they handle non-linear equations: Extended Kalman Filter uses the Jacobian matrix to linearize non-linear functions; Unscented Kalman Filter, on the other hand, does not need to linearize non-linear functions, insteadly, the unscented Kalman filter takes representative points from a Gaussian distribution. 
+
+
+
+
+[//]: # (Image References)
+[image1]: ./images/radar_measure.PNG
+[image2]: ./images/filter_comparision.PNG
+[image3]: ./images/EKF_KF_comparision.PNG
+[image4]: ./images/EKF_flowchart.PNG
+[radar_png]: ./images/radar_demo.PNG
+[lidar_png]: ./images/lidar_demo.PNG
+[both_png]: ./images/EKF_demo.PNG
